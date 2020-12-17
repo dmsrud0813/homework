@@ -1,0 +1,29 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+import pandas as pd
+
+# 타겟 URL을 읽어서 HTML를 받아오고,
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+data = requests.get('http://bookclub.yes24.com/BookClub/BcCateSub?OrderBy=UPDATE&FilterBy=&pageNo=1&title=%EB%B6%84%EC%95%BC%20%EC%84%A0%ED%83%9D',
+                    headers=headers)
+soup = BeautifulSoup(data.text, 'html.parser')
+books = soup.select('#ulGoodsList > li')
+
+#ulGoodsList > li:nth-child(1) > div > div > div > a
+#ulGoodsList > li:nth-child(1) > div > div > div
+for book in books:
+    link_tag = book.select_one('div > div > a').get('href')
+    link = book.select_one('div > div > a').get('href')
+    print(link[34])
+    # detail_data = requests.get(link[0], headers=headers)
+    # soup2 = BeautifulSoup(detail_data.text, 'html.parser')
+    # print(soup2)
+
+    # for datails in link:
+    #     detail_data = requests.get(link, headers=headers)
+    #     soup2 = BeautifulSoup(detail_data.text, 'html.parser')
+    #     book_detail = soup2.select('#bCDetailTop > div > div')
+    #     #  div.bcDetail_nameArea > h2
+    #     print(book_detail[0])
