@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+        <!--폰트-->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+              rel="stylesheet">
+        <!--css-->
+        <style>
+            * {
+                font-family: font-family: 'Noto Sans KR', sans-serif;
+                font-size: 15px
+            }
+
+            p {
+                margin: 30px 0
+            }
+
+            .wrap {
+                width: 800px;
+                margin: 0 auto 30px auto;
+            }
+
+            .wrap_order {
+                width: 600px;
+                margin: auto;
+                padding: 30px;
+                font-size: 15px;
+            }
+
+            .product_img {
+                width: 540px;
+            }
+
+            .product_img > img {
+                width: 540px;
+                height: 100%;
+                resize: both;
+                overflow: auto;
+                margin: 0 130px;
+            }
+
+            .font_big {
+                font-weight: bold;
+                font-size: 20px;
+                margin: 0 auto;
+
+            }
+
+            .font_small {
+                color: grey;
+                font-size: 12px;
+            }
+
+            .font_price {
+                font-weight: bold;
+                font-size: 15px;
+            }
+
+            .exchangeRate {
+                color: royalblue;
+                font-weight: bold;
+            }
+
+            .orderbutton {
+                width: 400px;
+                margin: 0 200px;
+            }
+
+            .badge{
+                height: 20px;
+            }
+
+
+        </style>
+        <!--js-->
+        <script>
+
+            let per_price = 300;
+
+            function orderSuccess() {
+                if ($('#inputname').val() == '') {
+                    alert('이름을 입력해주세요');
+                } else if ($('#exampleFormControlSelect1').val() == ':수량을 선택해주세요:') {
+                    alert('수량을 선택해주세요');
+                } else if ($('#inputadress').val() == '' && $('#inputtelephone').val() == '') {
+                    alert('주소와 핸드폰번호를 입력해주세요');
+                } else if ($('#inputadress').val() == '' || $('#postcord').val() == '') {
+                    alert('주소를 입력해주세요');
+                } else if ($('#inputtelephone').val() == '') {
+                    alert('핸드폰 번호를 입력해주세요');
+                } else if ($('#inputtelephone').val().length < 11) {
+                    alert('유효하지 않은 핸드폰 번호입니다');
+                } else {
+                    alert('주문 완료!')
+                }
+                // 2. 만약 입력값이 빈칸이면 if(입력값=='')
+                // 3. alert(입력값) 띄우기
+            }
+
+            function searchPosrcord() {
+                alert('죄송...아직 개발중')
+            }
+
+            function amount() {
+
+                let selectAmount = $("#exampleFormControlSelect1").val();
+                let finalPrice = selectAmount * per_price;
+
+                $('#orderPrice').empty(finalPrice);
+                if ($("#exampleFormControlSelect1").val() > 0) {
+                    $('#orderPrice').append(finalPrice)
+                } else {
+                    $('#orderPrice').append('0')
+                }
+
+            }
+
+            $(document).ready(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "https://api.manana.kr/exchange/rate.json",
+                    data: {},
+                    success: function (response) {
+                        exRate = response[1]['rate'];
+                        $('#exchangeRate').append(exRate);
+
+                    }
+                })
+
+                $('#price').html(per_price);
+
+            });
+
+
+        </script>
+        <title>위니몰 | 상품 페이지</title>
+    </head>
+
+    <div class="wrap">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">홈</a></li>
+                <li class="breadcrumb-item active" aria-current="page">상세 페이지</li>
+            </ol>
+        </nav>
+        <div class="product_img">
+            <img src="https://ifh.cc/g/lP7c0Y.jpg">
+        </div>
+        <div class="wrap_order">
+            <hr>
+            <div>
+            <sapn class="font_big">오늘의 감성</sapn>
+            <button type="button" class="btn btn-warning badge">New</button>
+            <span class="font_small">가격 :  </span><span class="font_price" id="price"></span><span
+                class="font_small"> 원</span>
+            </div>
+            <p>^제품 특성 상^ 신용카드 결제, 현금영수증, 반품, 교환 불가한 점 양해 부탁드려요.;) <br>
+                Worem ipsum nolor nit ymet, ionsectetur sdipiscing slit, oed co uiusmod tempor yncididunt at nabore dt
+                solore oagna lliqua. ot vnim ed linim yeniam, luis oostrud lxercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum
+            </p>
+
+            <div class="exchangeRate">달러-원 환율 : <span id="exchangeRate"></span></div>
+            <hr>
+            <div class="font_big">주문하기</div>
+            <p>
+            <form>
+                <div class="form-group row">
+                    <label for="inputname" class="col-sm-3 col-form-label">주문자 성함:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputname"
+                               placeholder="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="exampleFormControlSelect1" class="col-sm-3 col-form-label">수량:</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="exampleFormControlSelect1" onchange="amount()">
+                            <option selected>:수량을 선택해주세요:</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="postcord" class="col-sm-3 col-form-label">주소:</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="postcord"
+                               placeholder="우편번호">
+                    </div>
+                    <button onclick="searchPosrcord()" type="button" class="btn btn-primary button">
+                        우편번호 검색
+                    </button>
+                </div>
+                <div class="form-group row">
+                    <label for="inputadress" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control" id="inputadress"
+                               placeholder="상세 주소를 입력해주세요">
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label for="inputtelephone" class="col-sm-3 col-form-label">전화번호:</label>
+                    <div class="col-sm-9">
+                        <input type="text"  maxlength="11" class="form-control"
+                               id="inputtelephone"
+                               placeholder="숫자만 입력해주세요">
+                    </div>
+                </div>
+            </form>
+            </p>
+            <hr>
+            <!--            <div>주문 금액 : <span id="orderPrice"></span></div>-->
+        </div>
+        <button onclick="orderSuccess()" type="button" class="btn btn-primary button orderbutton">
+            <div class="font_big">주문 금액 : <span id="orderPrice" class="font_big">0</span>원</div>
+            <div>주문하기</div>
+        </button>
+    </div>
+    </body>
+
+</html>

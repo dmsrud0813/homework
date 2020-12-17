@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+        <!--폰트-->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap"
+              rel="stylesheet">
+        <!--css-->
+        <style>
+            *{font-family: 'Nanum Gothic', sans-serif;
+                font-size: 15px}
+            .wrap {
+                width: 1000px;
+                margin: 0 auto 30px auto;
+            }
+
+            .wrap_order {
+                width: 800px;
+                margin: auto;
+                padding: 30px;
+                border-top: 1px solid grey;
+                font-size: 15px;
+            }
+
+            .product_img > img {
+                width: 800px;
+                height: 100%;
+                resize: both;
+                overflow: auto;
+                margin: 0 100px;
+            }
+
+            .font_big {
+                font-weight: bold;
+                font-size: 20px;
+                margin: 0 15px 10px 0;
+
+            }
+
+            .font_small {
+                color: grey;
+                font-size: 12px;
+            }
+
+            .button {width: 400px;
+            margin: 0 300px;}
+
+            p {
+                margin: 10px auto;
+            }
+
+        </style>
+        <!--js-->
+        <script> function orderSuccess() {
+            alert('주문이 완료되었습니다.')
+        }
+        </script>
+        <title>위니몰 | 상품 페이지</title>
+    </head>
+
+    <div class="wrap">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">홈</a></li>
+                <li class="breadcrumb-item active" aria-current="page">상세 페이지</li>
+            </ol>
+        </nav>
+        <div class="product_img">
+            <img src="https://ifh.cc/g/lP7c0Y.jpg">
+        </div>
+        <div class="wrap_order">
+            <sapn class="font_big">오늘의 감성</sapn>
+            <span class="font_small">가격 : DM주세요</span>
+            <p>제품 특성 상 신용카드 결제, 현금영수증, 반품, 교환 불가한 점 양해 부탁드려요. <br>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum
+            </p>
+        </div>
+        <div class="wrap_order">
+            <div class="font_big">주문하기</div>
+            <form>
+                <div class="form-group row">
+                    <label for="inputname" class="col-sm-2 col-form-label">주문자 성함:</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="inputname"
+                               placeholder="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="exampleFormControlSelect1" class="col-sm-2 col-form-label">수량:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="exampleFormControlSelect1">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputadress" class="col-sm-2 col-form-label">주소:</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="inputadress"
+                               placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputtelephone" class="col-sm-2 col-form-label">전화번호:</label>
+                    <div class="col-sm-10">
+                        <input type="text" maxlength="11" class="form-control" id="inputtelephone"
+                               placeholder="">
+                        <div class="font_small">숫자만 입력해주세요 :)</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <button onclick="orderSuccess()" type="button" class="btn btn-primary button">
+            주문하기
+        </button>
+    </div>
+    </body>
+
+</html>
