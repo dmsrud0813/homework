@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <!--폰트-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+          rel="stylesheet">
+    <!--css-->
+    <style>
+        * {
+            font-family: font-family: 'Noto Sans KR', sans-serif;
+            font-size: 15px
+        }
+
+        p {
+            margin: 30px 0
+        }
+
+        .wrap {
+            width: 800px;
+            margin: 0 auto 30px auto;
+        }
+
+        .wrap_order {
+            width: 600px;
+            margin: auto;
+            padding: 30px;
+            font-size: 15px;
+        }
+
+        .product_img {
+            width: 540px;
+        }
+
+        .product_img > img {
+            width: 540px;
+            height: 100%;
+            resize: both;
+            overflow: auto;
+            margin: 0 130px;
+        }
+
+        .font_big {
+            font-weight: bold;
+            font-size: 20px;
+            margin: 0 auto;
+
+        }
+
+        .font_small {
+            color: grey;
+            font-size: 12px;
+        }
+
+        .font_price {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .exchangeRate {
+            color: royalblue;
+            font-weight: bold;
+        }
+
+        .orderbutton {
+            width: 400px;
+            margin: 0 200px;
+        }
+
+        .badge {
+            height: 20px;
+        }
+
+
+    </style>
+    <!--js-->
+    <script>
+
+        let per_price = 300;
+
+        $(document).ready(function () {
+                $("#order-box").html("");
+                showOrders();
+            });
+
+        function orderSuccess() {
+            if ($('#inputname').val() == '') {
+                alert('이름을 입력해주세요');
+            } else if ($('#exampleFormControlSelect1').val() == ':수량을 선택해주세요:') {
+                alert('수량을 선택해주세요');
+            } else if ($('#inputDetailAdress').val() == '' && $('#inputtelephone').val() == '') {
+                alert('주소와 핸드폰번호를 입력해주세요');
+            } else if ($('#inputDetailAdress').val() == '' || $('#postcode').val() == '') {
+                alert('주소를 입력해주세요');
+            } else if ($('#inputtelephone').val() == '') {
+                alert('핸드폰 번호를 입력해주세요');
+            } else if ($('#inputtelephone').val().length < 11) {
+                alert('유효하지 않은 핸드폰 번호입니다');
+            } else {
+                alert('주문 완료!')
+            }
+        }
+
+
+        function amount() {
+
+            let selectAmount = $("#exampleFormControlSelect1").val();
+            let finalPrice = selectAmount * per_price;
+
+            $('#orderPrice').empty(finalPrice);
+            if ($("#exampleFormControlSelect1").val() > 0) {
+                $('#orderPrice').append(finalPrice)
+            } else {
+                $('#orderPrice').append('0')
+            }
+
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {},
+                success: function (response) {
+                    exRate = response[1]['rate'];
+                    $('#exchangeRate').append(exRate);
+
+                }
+            })
+
+            $('#price').html(per_price);
+
+        });
+
+
+        function makeOrder() {
+            let orderName = $("#inputname").val()
+            let mobileNum = $("#inputtelephone").val()
+            let orderQuantity = $("#exampleFormControlSelect1").val()
+            let postcode = $("#postcode").val()
+            let adress = $("#inputadress").val()
+
+            $.ajax({
+                type: "POST",
+                url: "/order",
+                data: {
+                    orderName_give: orderName,
+                    mobileNum_give: mobileNum,
+                    orderQuantity_give: orderQuantity,
+                    postcode_give: postcode,
+                    adress_give: adress
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"]);
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+        function showOrders() {
+            $.ajax({
+                type: "GET",
+                url: "/order",
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let orders = response["orders"];
+                        for (let i = 0; i < orders.length; i++) {
+                            makeList(orders[i]['orderer'], orders[i]['mobileNum'], orders[i]['postcode'], orders[i]['adress'], orders[i]['orderQuantity'])
+                        }
+                    } else {
+                        alert("주문정를 불러오지 못했습니다")
+                    }
+                }
+            })
+        }
+
+        function makeList(inputname, inputtelephone, postcode,inputadress,exampleFormControlSelect1) {
+            let tempHtml = `<tr>
+                        <td>${inputname}</td>
+                        <td>${inputtelephone}</td>
+                        <td>${postcode}</td>
+                        <td>${inputadress}</td>
+                        <td>${exampleFormControlSelect1}</td>
+                    </tr>`;
+            $("#order-box").append(tempHtml);
+        }
+    </script>
+    <title>위니몰 | 상품 페이지</title>
+</head>
+
+<div class="wrap">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">홈</a></li>
+            <li class="breadcrumb-item active" aria-current="page">상세 페이지</li>
+        </ol>
+    </nav>
+    <div class="product_img">
+        <img src="https://ifh.cc/g/lP7c0Y.jpg">
+    </div>
+    <div class="wrap_order">
+        <hr>
+        <div>
+            <sapn class="font_big">오늘의 감성</sapn>
+            <button type="button" class="btn btn-warning badge">New</button>
+            <span class="font_small">가격 :  </span><span class="font_price" id="price"></span><span
+                class="font_small"> 원</span>
+        </div>
+        <p>^제품 특성 상^ 신용카드 결제, 현금영수증, 반품, 교환 불가한 점 양해 부탁드려요. ;) <br>
+            Worem ipsum nolor nit ymet, ionsectetur sdipiscing slit, oed co uiusmod tempor yncididunt at nabore dt
+            solore oagna lliqua. ot vnim ed linim yeniam, luis oostrud lxercitation ullamco laboris nisi ut aliquip
+            ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+            deserunt mollit anim id est laborum
+        </p>
+
+        <div class="exchangeRate">달러-원 환율 : <span id="exchangeRate"></span></div>
+        <hr>
+        <div class="font_big">주문하기</div>
+        <p>
+        <form>
+            <div class="form-group row">
+                <label for="inputname" class="col-sm-3 col-form-label">주문자 성함:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputname"
+                           placeholder="">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="exampleFormControlSelect1" class="col-sm-3 col-form-label">수량:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="exampleFormControlSelect1" onchange="amount()">
+                        <option selected>:수량을 선택해주세요:</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="postcode" class="col-sm-3 col-form-label">주소:</label>
+                <div class="col-sm-3">
+                    <input type="number" class="form-control" id="postcode"
+                           placeholder="우편번호">
+                </div>
+                <button onclick="searchPostcode()" type="button" class="btn btn-primary button">
+                    우편번호 검색
+                </button>
+            </div>
+
+
+            <div class="row form-group">
+                <label for="inputadress" class="col-sm-3 col-form-label"></label>
+                <div class="col" style="padding-right:5px; ">
+                    <input id="inputadress" type="text" class="form-control" placeholder="주소">
+                </div>
+                <div class="col" style="padding-left:5px;">
+                    <input id="inputExtra" type="text" class="form-control" placeholder="참고사항">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="inputDetailAdress" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" id="inputDetailAdress"
+                           placeholder="상세주소">
+                </div>
+            </div>
+
+            <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+            <script>
+                function searchPostcode() {
+                    new daum.Postcode({
+                        oncomplete: function (data) {
+                            var addr = '';
+                            var extraAddr = '';
+
+
+                            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                                addr = data.roadAddress;
+                            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                                addr = data.jibunAddress;
+                            }
+
+                            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                            if (data.userSelectedType === 'R') {
+                                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                                    extraAddr += data.bname;
+                                }
+                                // 건물명이 있고, 공동주택일 경우 추가한다.
+                                if (data.buildingName !== '' && data.apartment === 'Y') {
+                                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                                }
+                                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                                if (extraAddr !== '') {
+                                    extraAddr = ' (' + extraAddr + ')';
+                                }
+                                // 조합된 참고항목을 해당 필드에 넣는다.
+                                document.getElementById("inputExtra").value = extraAddr;
+
+                            } else {
+                                document.getElementById("inputExtra").value = '';
+                            }
+
+                            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                            document.getElementById('postcode').value = data.zonecode;
+                            document.getElementById('inputadress').value = addr;
+                            // 커서를 상세주소 필드로 이동한다.
+                            document.getElementById("inputDetailAdress").focus();
+                        }
+                    }).open();
+                }
+            </script>
+
+
+            <div class="form-group row">
+                <label for="inputtelephone" class="col-sm-3 col-form-label">전화번호:</label>
+                <div class="col-sm-9">
+                    <input type="text" maxlength="11" class="form-control"
+                           id="inputtelephone"
+                           placeholder="숫자만 입력해주세요">
+                </div>
+            </div>
+        </form>
+        </p>
+        <hr>
+
+    </div>
+    <button onclick="orderSuccess(), makeOrder()" type="button" class="btn btn-primary button orderbutton">
+        <div class="font_big">주문 금액 : <span id="orderPrice" class="font_big">0</span>원</div>
+        <div>주문하기</div>
+    </button>
+    <hr>
+     <div class="order-box">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">주문자</th>
+                <th scope="col">핸드폰 번호</th>
+                <th scope="col">우편번호</th>
+                <th scope="col">주소</th>
+                <th scope="col">주문수량</th>
+            </tr>
+            </thead>
+            <tbody id="order-box">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+
+    </div>
+</div>
+</body>
+</html>
